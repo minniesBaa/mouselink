@@ -1,4 +1,4 @@
-from websockets.sync.server import serve
+from websockets.sync.server import serve as _serve
 import comms
 import json
 
@@ -32,7 +32,7 @@ class _peripheral:
                 if self._comm.val(data):
                     self._comm.read(data, _run)
     def _main(self):
-        with serve(self._link, "localhost", 20111) as server:
+        with _serve(self._link, "localhost", 20111) as server:
             server.serve_forever()
     def _onread(self):
         if self.onread is not None:
