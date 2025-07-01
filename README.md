@@ -1,0 +1,2 @@
+# Mouselink
+Mouselink is a Python package that emulates [Scratch Link](https://scratch.mit.edu/download/scratch-link), which enables Scratch to connect to hardware peripherals such as a micro:bit or an EV3. Mouselink tricks Scratch into thinking that it *is* Scratch Link, and allows you to connect Scratch to more then their small selection of hardware peripherals, and to software as well!
