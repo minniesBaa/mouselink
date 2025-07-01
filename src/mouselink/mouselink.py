@@ -43,9 +43,4 @@ class _peripheral:
 class ev3(_peripheral):
     def __init__(self):
         self._sl = comms.sl_messages()
-        self._comm = comms.protocol()
-
-#def read_from_scratch(data):
-#    print(f"data: {data}")
-#    print(f"Length: {len(data)}")
-#    comm.write(data)
+        self._comm = comms.ev3protocol()

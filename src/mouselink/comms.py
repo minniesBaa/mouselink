@@ -22,7 +22,7 @@ class sl_messages:
         data = json.loads(message)
         id = data["id"]
         return id
-class protocol:
+class ev3protocol:
     def __init__(self):
         self.readBuffer = ""
         self.writeBuffer = []
