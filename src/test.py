@@ -1,4 +1,4 @@
-import server as sl
+import mouselink as sl
 
 p = sl.ev3()
 

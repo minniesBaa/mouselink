@@ -21,4 +21,4 @@ license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
 [project.urls]
-Source Code = "https://github.com/minniesBaa/mouselink"
+Homepage = "https://github.com/minniesBaa/mouselink"
