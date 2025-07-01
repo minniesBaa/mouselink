@@ -1,6 +1,6 @@
 import mouselink as sl
 
-p = sl.ev3()
+p = sl.ev3() 
 
 def on_read(data):
     print(f"Got data: {data}")
