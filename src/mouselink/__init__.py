@@ -1,1 +1,1 @@
-from . import mouselink
+from .mouselink import *
