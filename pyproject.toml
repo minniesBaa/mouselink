@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 dependencies = [
     "websockets==15.0.1"
 ]
-name = "TBD"
+name = "mouselink"
 version = "0.0.1"
 authors = [
   { name="minniesBaa", email="contact@themice.org" },
@@ -22,3 +22,5 @@ license-files = ["LICEN[CS]E*"]
 
 [project.urls]
 Homepage = "https://github.com/minniesBaa/mouselink"
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
