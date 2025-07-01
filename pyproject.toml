@@ -8,7 +8,7 @@ dependencies = [
 name = "TBD"
 version = "0.0.1"
 authors = [
-  { name="minniesBaa", email="TBA" },
+  { name="minniesBaa", email="contact@themice.org" },
 ]
 description = "Python project that emulates Scratch Link, and allows communication between Scratch and Python."
 readme = "README.md"
@@ -21,5 +21,4 @@ license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
 [project.urls]
-Homepage = "TBA"
-Issues = "TBA"
+Source Code = "https://github.com/minniesBaa/mouselink"
