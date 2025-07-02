@@ -32,6 +32,11 @@ class sl_messages_ev3:
         data = json.loads(message)
         method = data["method"]
         return method
+    def getPayload(self, message):
+         # get the payload from jsonrpc message
+        data = json.loads(message)
+        payload = data["params"]["message"]
+        return payload
     def getId(self, message):
         # gets the message ID from a jsonrpc message
         data = json.loads(message)

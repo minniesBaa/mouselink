@@ -1,4 +1,4 @@
-import mouselink as sl # import mouselink
+import src.mouselink as sl # import mouselink
 
 p = sl.ev3() # set "p" to an ev3 object
 
