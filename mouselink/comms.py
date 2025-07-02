@@ -3,7 +3,7 @@ File for handling communications and some message construction
 """
 
 import json
-import pack
+from . import pack
 class sl_messages_ev3: 
     # class with all the JSON message construction functions
     @staticmethod

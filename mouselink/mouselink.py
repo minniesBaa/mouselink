@@ -1,6 +1,7 @@
 from websockets.sync.server import serve as _serve # websocket server
-import comms
-import json
+from . import comms
+import threading
+import time
 
 devices = "CwAAAAAhAJiBIGDhIA==" # the base64 sent by Scratch when requesting the devices connected to a peripheral
 
@@ -38,7 +39,13 @@ class _peripheral: # class that every peripheral inherits from
                     self._comm.read(data, _run)
     def _main(self): # function to serve the server
         with _serve(self._link, "localhost", 20111) as server:
-            server.serve_forever()
+            server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+            server_thread.start()
+            try:
+                while server_thread.is_alive():
+                    time.sleep(0.5)
+            except:
+                server.shutdown()
     def _onread(self): # run the onread function
         if self.onread is not None:
             self.onread
