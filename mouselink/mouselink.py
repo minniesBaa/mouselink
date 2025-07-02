@@ -8,7 +8,11 @@ devices = "CwAAAAAhAJiBIGDhIA==" # the base64 sent by Scratch when requesting th
 onread = None # variable to store users' on_load function
 
 def _run(e): # call the on_load function
-    onread(e)
+    if e is not None:
+        try:
+            onread(e)
+        except:
+            raise ValueError("on_read is incorrectly set!")
 
 class _peripheral: # class that every peripheral inherits from
     def __init__(self): #### TEMP - just so i can verify methods exist via vscode
