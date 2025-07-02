@@ -1,29 +1,46 @@
+"""
+File for handling communications and some message construction
+"""
+
 import json
 import pack
-class sl_messages: 
-    device_list_message = '{"jsonrpc":"2.0","method":"didReceiveMessage","params":{"encoding":"base64","message":"JAAAAAIefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgE="}}'
+class sl_messages_ev3: 
+    # class with all the JSON message construction functions
+    @staticmethod
+    def device_list():
+        # returns a message for responding to Scratch's requests for the devices plugged into the peripheral
+        data = {
+            "jsonrpc":"2.0","method":"didReceiveMessage","params":{"encoding":"base64","message":"JAAAAAIefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgE="}
+            } # this is captured from a real EV3, with one dist sensor on sensor 1.
+        return json.dumps(data)
     def connection_start(self, message):
+        # construct a message to initiate a connection with Scratch
         data = {
             "jsonrpc": "2.0", "id": None, "result": None
         }
         data["id"] = self.getId(message)
         return json.dumps(data)
     def connection_info(self, ping):
+        # send Scratch a message saying that a fake EV3 peripheral *totally* exists
         data = {
             "jsonrpc":"2.0","method":"didDiscoverPeripheral","params":{"peripheralId":"virtual_ev3","name":"Emulated EV3","rssi":-1000}
         }
         data["rssi"] = ping
         return json.dumps(data)
     def getMethod(self, message):
+         # get the message method from a jsonrpc message
         data = json.loads(message)
         method = data["method"]
         return method
     def getId(self, message):
+        # gets the message ID from a jsonrpc message
         data = json.loads(message)
         id = data["id"]
         return id
 class ev3protocol:
+    # a (janky) protocol for communicating with Scratch
     def __init__(self):
+        # init function - set some variables
         self.readBuffer = ""
         self.writeBuffer = []
         self.isReading = False
@@ -41,11 +58,13 @@ class ev3protocol:
             "DwAAAIAAAJQBgQKCchOCAQA=": 3  # a 1, note 130
         }
     def val(self,data):
+        # validate if the data is acceptable by the protocol
         if data not in self.types.keys():
             return False
         else:
             return True
     def read(self,data,func):
+        # read one bit from the project
         char = self.types[data]
         match char:
             case 0:
@@ -59,6 +78,7 @@ class ev3protocol:
             case 3:
                 self.readBuffer = f"{self.readBuffer}1"
     def write(self,data):
+        # write some data to the project
         buffer = [self.writetypes[1],self.writetypes[0]]
         for bit in data:
             match bit:
@@ -73,17 +93,20 @@ class ev3protocol:
         buffer.append(self.writetypes[2])
         self.writeBuffer = buffer
     def jsonify(self,data):
+        # create a json message with special data in the params/message field
         jsondata = {
             "jsonrpc":"2.0","method":"didReceiveMessage","params":{"encoding":"base64","message":""}
         }
         jsondata["params"]["message"] = data
         return json.dumps(jsondata)
     def _tosend(self,devicereq):
+        # decides what data to send to the project
         if devicereq:
-            return sl_messages.device_list_message
+            return sl_messages_ev3.device_list()
         else:
             return self.jsonify(self._buildmessage())
     def _buildmessage(self):
+        # constructs a message to a list that is sent bit by bit
         if self.writeBuffer == []:
             res=pack.pack_dist(0)
         else:

@@ -42,5 +42,5 @@ class _peripheral:
         onread = func
 class ev3(_peripheral):
     def __init__(self):
-        self._sl = comms.sl_messages()
+        self._sl = comms.sl_messages_ev3()
         self._comm = comms.ev3protocol()
