@@ -16,5 +16,7 @@ def _add_filler_vals_dist(data):
 def _b64ify(data):
     # convert a list of numbers to base64
     return base64.b64encode(bytes(data)).decode('ascii')
+def _unpk(data):
+    return base64.b64decode(str(data).encode('ascii'))
 def pack_dist(num):
     return _b64ify(_add_filler_vals_dist(_pack_float(num)))
