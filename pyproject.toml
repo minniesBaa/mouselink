@@ -6,7 +6,7 @@ dependencies = [
     "websockets==15.0.1"
 ]
 name = "mouselink"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
   { name="minniesBaa", email="contact@themice.org" },
 ]

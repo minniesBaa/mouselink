@@ -34,7 +34,7 @@ class _peripheral: # class that every peripheral inherits from
             devicereq = False
             if self._sl.getMethod(message) == "discover": # check if Scratch is looking for devices
                 websocket.send(self._sl.connection_start(message))
-                websocket.send(self._sl.connection_info(-500))
+                websocket.send(self._sl.connection_info(-500, self.name))
             if self._sl.getMethod(message) == "connect": # when scratch picks a peripheral
                 websocket.send(self._sl.connection_start(message))
             if self._sl.getMethod(message) == "send": # when connection is live and data is being sent
@@ -64,3 +64,4 @@ class ev3(_peripheral):
     def __init__(self):
         self._sl = comms.sl_messages_ev3() # set comms and sl objects
         self._comm = comms.ev3protocol()
+        self.name = "Mouselink Device"

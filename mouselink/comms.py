@@ -20,12 +20,13 @@ class sl_messages_ev3:
         }
         data["id"] = self.getId(message)
         return json.dumps(data)
-    def connection_info(self, ping):
+    def connection_info(self, ping, name):
         # send Scratch a message saying that a fake EV3 peripheral *totally* exists
         data = {
-            "jsonrpc":"2.0","method":"didDiscoverPeripheral","params":{"peripheralId":"virtual_ev3","name":"Emulated EV3","rssi":-1000}
+            "jsonrpc":"2.0","method":"didDiscoverPeripheral","params":{"peripheralId":"mouselink_device","name":None,"rssi":-1000}
         }
         data["rssi"] = ping
+        data["params"]["name"] = name
         return json.dumps(data)
     def getMethod(self, message):
          # get the message method from a jsonrpc message
