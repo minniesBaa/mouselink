@@ -23,7 +23,10 @@ class _peripheral: # class that every peripheral inherits from
         self._comm.write(data)
     def run(self):
         # starts the websocket server for use by Scratch
-        self._main()
+        try:
+            self._main()
+        except:
+            raise OSError("Error starting the websocket server! Make sure you have stopped Scratch Link.")
     def _link(self,websocket):
         # websocket connection handler
         global devices
