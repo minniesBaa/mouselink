@@ -26,3 +26,6 @@ def pack_dist(num):
 def _convert_note_bytes(num1, num2):
     # convert note bytes to notes
     return round(12*math.log2((num2*256+num1)/440)+57)
+def bytes_to_decimal(num1, num2):
+    # convert two bytes from Scratch to an int
+    return num2*256+num1
