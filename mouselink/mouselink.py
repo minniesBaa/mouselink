@@ -5,7 +5,8 @@ import time
 
 devices = "CwAAAAAhAJiBIGDhIA==" # the base64 sent by Scratch when requesting the devices connected to a peripheral
 
-onread = None # variable to store users' on_load function
+onread = None # variable to store users' on_read function
+onconn = None # variable to store users' on_connect function
 
 def _run(e): # call the on_load function
     if e is not None:
@@ -13,6 +14,13 @@ def _run(e): # call the on_load function
             onread(e)
         except:
             raise ValueError("on_read is incorrectly set!")
+        
+def _onconn(e): # call the on_load function
+    if e is not None:
+        try:
+            onconn(e)
+        except:
+            raise ValueError("on_connect is incorrectly set!")
 
 class _peripheral: # class that every peripheral inherits from
     def __init__(self): #### TEMP - just so i can verify methods exist via vscode
@@ -36,6 +44,7 @@ class _peripheral: # class that every peripheral inherits from
                 websocket.send(self._sl.connection_start(message))
                 websocket.send(self._sl.connection_info(-500, self.name))
             if self._sl.getMethod(message) == "connect": # when scratch picks a peripheral
+                _onconn()
                 websocket.send(self._sl.connection_start(message))
             if self._sl.getMethod(message) == "send": # when connection is live and data is being sent
                 data = self._sl.getPayload(message)
@@ -53,12 +62,12 @@ class _peripheral: # class that every peripheral inherits from
                     time.sleep(0.5)
             except:
                 server.shutdown()
-    def _onread(self): # run the onread function
-        if self.onread is not None:
-            self.onread
     def on_read(self,func): # set the onread function
         global onread
         onread = func
+    def on_connect(self,func): # set the onconn function
+        global onconn
+        onconn = func
 class ev3(_peripheral):
     # an ev3 peripheral class
     def __init__(self):
