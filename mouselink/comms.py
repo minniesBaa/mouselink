@@ -124,3 +124,6 @@ class ev3protocol:
                 self.writeBuffer = []
             
         return res 
+    
+class sl_messages_microbit(sl_messages_ev3):
+    pass
