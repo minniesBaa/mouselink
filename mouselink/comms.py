@@ -126,4 +126,8 @@ class ev3protocol:
         return res 
     
 class sl_messages_microbit(sl_messages_ev3):
-    pass
+    @staticmethod
+    def on_read_req():
+        data = {
+            "jsonrpc":"2.0","id":2,"result":{"encoding":"base64","message":"AAAAOQAAAAAAAAAAAAAAAAAAAAA="}
+            }

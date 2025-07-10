@@ -2,6 +2,7 @@ from websockets.sync.server import serve as _serve # websocket server
 from . import comms
 import threading
 import time
+import json
 
 devices = "CwAAAAAhAJiBIGDhIA==" # the base64 sent by Scratch when requesting the devices connected to a peripheral
 
@@ -81,15 +82,26 @@ class microbit(_peripheral):
         # self._comm = comms.ev3protocol()
         self.name = "Mouselink Device"
     def _link(self,sock):
-        for message in sock:
-            match self._sl.getMethod(message):
-                case "discover":
-                    sock.send(self._sl.connection_info(-500, self.name))
-                case "connect":
-                    sock.send(self._sl.connection_start(message))
-                case "write":
-                    sock.send('{"jsonrpc":"2.0","method":"characteristicDidChange","params":{"serviceId":"0000f005-0000-1000-8000-00805f9b34fb","characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc","encoding":"base64","message":"/2kAOQAAAAAAAAAAAAAAAAAAAAA="}}')
-                    data = {"jsonrpc":"2.0","id":4,"result":6}
-                    data["id"] = self._sl.getId(message)
-                case "read": 
-                    sock.send('{"jsonrpc":"2.0","id":2,"result":{"encoding":"base64","message":"AAAAOQAAAAAAAAAAAAAAAAAAAAA="}}')
+        while True:
+            try:
+                message = sock.recv(timeout=0.1)
+                match self._sl.getMethod(message):
+                    case "discover":
+                        sock.send(self._sl.connection_info(-500, self.name))
+                    case "connect":
+                        sock.send(self._sl.connection_start(message))
+                    case "write":
+                        sock.send('{"jsonrpc":"2.0","method":"characteristicDidChange","params":{"serviceId":"0000f005-0000-1000-8000-00805f9b34fb","characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc","encoding":"base64","message":"/2kAOQAAAAAAAAAAAAAAAAAAAAA="}}')
+                        data = {"jsonrpc":"2.0","id":4,"result":6}
+                        data["id"] = self._sl.getId(message)
+                        sock.send(json.dumps(data))
+                    case "read": 
+                        sock.send('{"jsonrpc":"2.0","id":2,"result":{"encoding":"base64","message":"AAAAOQAAAAAAAAAAAAAAAAAAAAA="}}')
+                    case _:
+                        pass
+            except TimeoutError:
+                sock.send('{"jsonrpc":"2.0","method":"characteristicDidChange","params":{"serviceId":"0000f005-0000-1000-8000-00805f9b34fb","characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc","encoding":"base64","message":"/2kAOQAAAAAAAAAAAAAAAAAAAAA="}}')
+            except Exception as e:
+                print(e)
+                break
+            time.sleep(0.5)
