@@ -79,9 +79,10 @@ class ev3(_peripheral):
 class microbit(_peripheral):
     def __init__(self):
         self._sl = comms.sl_messages_microbit() # set comms and sl objects
-        # self._comm = comms.ev3protocol() # removed until one is developed for micro:bit
+        self._comm = comms.microbitprotocol()
         self.name = "Mouselink Device"
     def _link(self,sock):
+        global onread
         while True:
             try:
                 message = sock.recv(timeout=0.1)
@@ -95,12 +96,14 @@ class microbit(_peripheral):
                         data = {"jsonrpc":"2.0","id":4,"result":0}
                         data["id"] = self._sl.getId(message)
                         sock.send(json.dumps(data))
+                        self._comm.read(message, onread)
                     case "read": 
                         sock.send(self._sl.on_read_req())
                     case _:
                         pass
             except TimeoutError:
                 sock.send(self._sl.make_microbit_packet("/2kAOQAAAAAAAAAAAAAAAAAAAAA="))
-            except Exception as e:
-                break
+            #except Exception as e:
+            #    print(e)
+            #    break
             time.sleep(0.1)

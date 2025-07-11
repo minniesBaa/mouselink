@@ -156,7 +156,10 @@ class microbitprotocol:
         pass
     def write(self):
         pass
-    def read(self, onread):
-        pass
+    def read(self, message, onread):
+        if onread is not None:
+            onread(pack.microbit_load_matrix(json.loads(message)["params"]["message"]))
+        else:
+            print("Set your on_read function to respond to messages from Scratch!")
     def val(self):
         pass

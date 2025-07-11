@@ -36,3 +36,5 @@ def reconstruct_matrix(data):
     p3 = data[4]<<15
     p4 = data[5]<<20
     return bin(p0|p1|p2|p3|p4)[2:].zfill(25)[::-1]
+def microbit_load_matrix(data):
+    return reconstruct_matrix(_unpk(data))
