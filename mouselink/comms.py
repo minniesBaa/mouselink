@@ -129,5 +129,34 @@ class sl_messages_microbit(sl_messages_ev3):
     @staticmethod
     def on_read_req():
         data = {
-            "jsonrpc":"2.0","id":2,"result":{"encoding":"base64","message":"AAAAOQAAAAAAAAAAAAAAAAAAAAA="}
+            "jsonrpc":"2.0","id":2,"result":    {
+                    "encoding":"base64","message":"AAAAOQAAAAAAAAAAAAAAAAAAAAA="
+                }
             }
+        return json.dumps(data)
+    @staticmethod
+    def got_message():
+        data = {
+            "jsonrpc":"2.0","id":0,"result":    {
+                    "encoding":"base64","message":"AAAAOQAAAAAAAAAAAAAAAAAAAAA="
+                }
+            }
+        return json.dumps(data)
+    @staticmethod
+    def make_microbit_packet(b64):
+        data = {
+            "jsonrpc":"2.0","method":"characteristicDidChange","params":    {
+                        "serviceId":"0000f005-0000-1000-8000-00805f9b34fb","characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc","encoding":"base64","message":None
+                    }
+                }
+        data["params"]["message"] = b64
+        return json.dumps(data)
+class microbitprotocol:
+    def __init__(self):
+        pass
+    def write(self):
+        pass
+    def read(self, onread):
+        pass
+    def val(self):
+        pass

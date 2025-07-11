@@ -61,7 +61,7 @@ class ev3(_peripheral):
         # websocket connection handler for EV3
         global devices
         for message in websocket:
-            devicereq = False #TODO: use match/case instead of a mass of if statements
+            devicereq = False
             if self._sl.getMethod(message) == "discover": # check if Scratch is looking for devices
                 websocket.send(self._sl.connection_start(message))
                 websocket.send(self._sl.connection_info(-500, self.name))
@@ -79,7 +79,7 @@ class ev3(_peripheral):
 class microbit(_peripheral):
     def __init__(self):
         self._sl = comms.sl_messages_microbit() # set comms and sl objects
-        # self._comm = comms.ev3protocol()
+        # self._comm = comms.ev3protocol() # removed until one is developed for micro:bit
         self.name = "Mouselink Device"
     def _link(self,sock):
         while True:
@@ -91,17 +91,16 @@ class microbit(_peripheral):
                     case "connect":
                         sock.send(self._sl.connection_start(message))
                     case "write":
-                        sock.send('{"jsonrpc":"2.0","method":"characteristicDidChange","params":{"serviceId":"0000f005-0000-1000-8000-00805f9b34fb","characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc","encoding":"base64","message":"/2kAOQAAAAAAAAAAAAAAAAAAAAA="}}')
-                        data = {"jsonrpc":"2.0","id":4,"result":6}
+                        sock.send(self._sl.got_message())
+                        data = {"jsonrpc":"2.0","id":4,"result":0}
                         data["id"] = self._sl.getId(message)
                         sock.send(json.dumps(data))
                     case "read": 
-                        sock.send('{"jsonrpc":"2.0","id":2,"result":{"encoding":"base64","message":"AAAAOQAAAAAAAAAAAAAAAAAAAAA="}}')
+                        sock.send(self._sl.on_read_req())
                     case _:
                         pass
             except TimeoutError:
-                sock.send('{"jsonrpc":"2.0","method":"characteristicDidChange","params":{"serviceId":"0000f005-0000-1000-8000-00805f9b34fb","characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc","encoding":"base64","message":"/2kAOQAAAAAAAAAAAAAAAAAAAAA="}}')
+                sock.send(self._sl.make_microbit_packet("/2kAOQAAAAAAAAAAAAAAAAAAAAA="))
             except Exception as e:
-                print(e)
                 break
-            time.sleep(0.5)
+            time.sleep(0.1)

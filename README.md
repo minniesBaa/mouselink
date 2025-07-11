@@ -30,6 +30,6 @@ p.run()
  - Support connecting as other peripherals
    - micro:bit
    - WeDo 2.0
+ - Allow for more peripherals (like LEGO Spike/RI)
+ - Custom firmware for peripherals
  - Communication using the Translate extention's data saving glitch
-## How does it work?
-I investigated Scratch's communication with Scratch Link, and discovered it uses a plain, unencrypted WebSocket server. I own an EV3, so I used my web browser's developer tools to monitor the data sent between Scratch and Scratch Link. I then began writing Mouselink, using my real EV3 communication as reference for the protocol. After a few days, I could connect an emulated EV3 device and have it be recognised by Scratch, and a few days after that I could transmit data between Scratch and Mouselink.

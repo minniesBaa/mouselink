@@ -29,3 +29,10 @@ def _convert_note_bytes(num1, num2):
 def bytes_to_decimal(num1, num2):
     # convert two bytes from Scratch to an int
     return num2*256+num1
+def reconstruct_matrix(data):
+    p0 = data[1]
+    p1 = data[2]<<5
+    p2 = data[3]<<10
+    p3 = data[4]<<15
+    p4 = data[5]<<20
+    return bin(p0|p1|p2|p3|p4)[2:].zfill(25)[::-1]
