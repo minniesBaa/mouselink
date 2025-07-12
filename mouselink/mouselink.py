@@ -102,9 +102,7 @@ class microbit(_peripheral):
                     case _:
                         pass
             except TimeoutError:
-                #sock.send(self._sl.make_microbit_packet("/2kAOQAAAAAAAAAAAAAAAAAAAAA="))
                 sock.send(self._sl.make_microbit_packet("ACgAQwEBAQEBbw=="))
             #except Exception as e:
             #    print(e)
             #    break
-            time.sleep(0.1)
