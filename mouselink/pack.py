@@ -39,5 +39,22 @@ def reconstruct_matrix(data):
 def microbit_load_matrix(data):
     return reconstruct_matrix(_unpk(data))
 def microbit_build_sensors(sensors):
-    ## UPDATE WITH NEW CODE
-    pass
+    tiltX = [sensors[0] * 10 >> 8, sensors[0] * 10 & 0xff]
+    tiltY = [sensors[1] * 10 >> 8, sensors[1] * 10 & 0xff]
+    buttonA = 1 if sensors[2] else 0
+    buttonB = 1 if sensors[3] else 0
+    touchpin1 = 1 if sensors[4][0] else 0
+    touchpin2 = 1 if sensors[4][1] else 0
+    touchpin3 = 1 if sensors[4][2] else 0
+    gesture = int(f"{1 if sensors[5] else 0}{1 if sensors[5] else 0}{1 if sensors[5] else 0}")
+    data = []
+    data.extend(tiltX)
+    data.extend(tiltY)
+    data.append(buttonA)
+    data.append(buttonB)
+    data.append(touchpin1)
+    data.append(touchpin2)
+    data.append(touchpin3)
+    data.append(gesture)
+    print(data)
+    return _b64ify(data)
