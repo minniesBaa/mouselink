@@ -1,5 +1,5 @@
 """
-File for packaging values into base64'd packets readable by Scratch
+File for packaging/unpackaging values/base64
 """
 
 import struct
@@ -38,3 +38,6 @@ def reconstruct_matrix(data):
     return bin(p0|p1|p2|p3|p4)[2:].zfill(25)[::-1]
 def microbit_load_matrix(data):
     return reconstruct_matrix(_unpk(data))
+def microbit_build_sensors(sensors):
+    ## UPDATE WITH NEW CODE
+    pass
