@@ -153,13 +153,16 @@ class sl_messages_microbit(sl_messages_ev3):
         return json.dumps(data)
 class microbitprotocol:
     def __init__(self):
-        pass
-    def write(self):
-        pass
+        self.writeBuffer = []
+    def write(self, data):
+        chunks = [data[i:i+27] for i in range(0, len(data), 27)]
+        self.writeBuffer += chunks
     def read(self, message, onread):
         if onread is not None:
             onread(pack.microbit_load_matrix(json.loads(message)["params"]["message"]))
         else:
             print("Set your on_read function to respond to messages from Scratch!")
     def val(self):
+        pass
+    def toread(self):
         pass

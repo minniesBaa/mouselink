@@ -58,9 +58,9 @@ def microbit_build_sensors(sensors):
     data.append(gesture)
     print(data)
     return _b64ify(data)
-def _split_bits_microbit(data):
-    data = str(data).zfill(28)
-    breakoutindexes = [10,10,1,1,1,1,1,3]
+def _split_bits_microbit(data,bit):
+    data = str(data).zfill(27)
+    breakoutindexes = [10,10,1,1,1,1,"bit",3]
     buffer = ""
     res = []
     for i in range(25):
@@ -69,6 +69,10 @@ def _split_bits_microbit(data):
             del(breakoutindexes[0])
             res.append(buffer)
             buffer = ""
+        elif breakoutindexes[0] == "bit":
+            del(breakoutindexes[0])
+            res.append(bit)
+            buffer = ""
     return res
-def _make_microbit_msg(data):
-    return _make_microbit_msg(_split_bits_microbit(data))
+def _make_microbit_msg(data, bit):
+    return microbit_build_sensors(_split_bits_microbit(data, bit))
