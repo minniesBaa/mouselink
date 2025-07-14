@@ -25,7 +25,7 @@ class sl_messages_ev3:
         data = {
             "jsonrpc":"2.0","method":"didDiscoverPeripheral","params":{"peripheralId":"mouselink_device","name":None,"rssi":-1000}
         }
-        data["rssi"] = ping
+        data["rssi"] = ping #TODO: fix this - wrong param
         data["params"]["name"] = name
         return json.dumps(data)
     def getMethod(self, message):
@@ -118,7 +118,7 @@ class ev3protocol:
         else:
             
             res=pack.pack_dist(self.writeBuffer[0]) 
-            try:
+            try: # TODO: make this not create new list
                 self.writeBuffer = self.writeBuffer[1:] 
             except:
                 self.writeBuffer = []
@@ -154,9 +154,11 @@ class sl_messages_microbit(sl_messages_ev3):
 class microbitprotocol:
     def __init__(self):
         self.writeBuffer = []
+        self.flipBit = "0"
     def write(self, data):
         chunks = [data[i:i+27] for i in range(0, len(data), 27)]
         self.writeBuffer += chunks
+        self.flipBit = "1" if self.flipBit == "0" else "0"
     def read(self, message, onread):
         if onread is not None:
             onread(pack.microbit_load_matrix(json.loads(message)["params"]["message"]))
@@ -164,5 +166,10 @@ class microbitprotocol:
             print("Set your on_read function to respond to messages from Scratch!")
     def val(self):
         pass
-    def toread(self):
-        pass
+    def towrite(self):
+        if not self.writeBuffer == []:
+            chunk = self.writeBuffer[0]
+            del(self.writeBuffer[0])
+            return pack._make_microbit_msg(chunk, self.flipBit)
+        else:
+            return pack.microbit_build_sensors([0,0,False,False,False,False,False,False,False,False])

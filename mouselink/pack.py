@@ -39,14 +39,14 @@ def reconstruct_matrix(data):
 def microbit_load_matrix(data):
     return reconstruct_matrix(_unpk(data))
 def microbit_build_sensors(sensors):
-    tiltX = [sensors[0] * 10 >> 8, sensors[0] * 10 & 0xff]
-    tiltY = [sensors[1] * 10 >> 8, sensors[1] * 10 & 0xff]
-    buttonA = 1 if sensors[2] else 0
-    buttonB = 1 if sensors[3] else 0
-    touchpin1 = 1 if sensors[4][0] else 0
-    touchpin2 = 1 if sensors[4][1] else 0
-    touchpin3 = 1 if sensors[4][2] else 0
-    gesture = int(f"{1 if sensors[5] else 0}{1 if sensors[5] else 0}{1 if sensors[5] else 0}")
+    tiltX = [(int(str(sensors[0]), 2) * 10 >> 8), (int(str(sensors[0]) ,2) * 10 & 0xff)]
+    tiltY = [(int(str(sensors[1]), 2) * 10 >> 8), (int(str(sensors[1]) ,2) * 10 & 0xff)]
+    buttonA = (1 if sensors[2] == "1" else 0)
+    buttonB = (1 if sensors[3] == "1" else 0)
+    touchpin1 = (1 if sensors[4] == "1" else 0) # TODO: use int
+    touchpin2 = (1 if sensors[5] == "1" else 0)
+    touchpin3 = (1 if sensors[6] == "1" else 0)
+    gesture = int(f"{1 if sensors[7] else 0}{1 if sensors[8] else 0}{1 if sensors[9] else 0}", 2)
     data = []
     data.extend(tiltX)
     data.extend(tiltY)
@@ -56,14 +56,13 @@ def microbit_build_sensors(sensors):
     data.append(touchpin2)
     data.append(touchpin3)
     data.append(gesture)
-    print(data)
     return _b64ify(data)
 def _split_bits_microbit(data,bit):
     data = str(data).zfill(27)
-    breakoutindexes = [10,10,1,1,1,1,"bit",3]
+    breakoutindexes = [10,10,"bit",1,1,1,1,1,1,1]
     buffer = ""
     res = []
-    for i in range(25):
+    for i in range(27):
         buffer += data[i]
         if len(buffer) == breakoutindexes[0]:
             del(breakoutindexes[0])
@@ -73,6 +72,7 @@ def _split_bits_microbit(data,bit):
             del(breakoutindexes[0])
             res.append(bit)
             buffer = ""
+    res.append(buffer)
     return res
 def _make_microbit_msg(data, bit):
     return microbit_build_sensors(_split_bits_microbit(data, bit))

@@ -59,6 +59,7 @@ class ev3(_peripheral):
         self.name = "Mouselink Device"
     def _link(self,websocket):
         # websocket connection handler for EV3
+        # TODO: use match/case here instead of if statements
         global devices
         for message in websocket:
             devicereq = False
@@ -102,7 +103,7 @@ class microbit(_peripheral):
                     case _:
                         pass
             except TimeoutError:
-                sock.send(self._sl.make_microbit_packet("ACgAQwEBAQEBbw=="))
-            #except Exception as e:
+                sock.send(self._sl.make_microbit_packet(self._comm.towrite()))
+            except Exception as e:
             #    print(e)
-            #    break
+                break
