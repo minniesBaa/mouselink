@@ -155,6 +155,8 @@ class microbitprotocol:
     def __init__(self):
         self.writeBuffer = []
         self.flipBit = "0"
+        self.dataBit = "0"
+        self.pinstate = [0,0,0,0,0,0]
     def write(self, data):
         chunks = [data[i:i+27] for i in range(0, len(data), 27)]
         self.writeBuffer += chunks
@@ -170,6 +172,12 @@ class microbitprotocol:
         if not self.writeBuffer == []:
             chunk = self.writeBuffer[0]
             del(self.writeBuffer[0])
-            return pack._make_microbit_msg(chunk, self.flipBit)
+            self.flipBit = "1" if self.flipBit == "0" else "0"
+            print((chunk, self.flipBit, self.dataBit, self.pinstate))
+            res = pack._make_microbit_msg(chunk, self.flipBit, self.dataBit, self.pinstate)
+            print(res)
+            self.pinstate = res[1]
+            return res[0]
         else:
-            return pack.microbit_build_sensors([0,0,False,False,False,False,False,False,False,False])
+            self.pinstate = [0,0,0,0,0,0]
+            return pack.microbit_build_sensors([0,0,False,False,False,False,False,False,False,False], self.pinstate)[0]
