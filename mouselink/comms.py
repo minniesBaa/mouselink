@@ -154,13 +154,13 @@ class sl_messages_microbit(sl_messages_ev3):
 class microbitprotocol:
     def __init__(self):
         self.writeBuffer = []
-        self.flipBit = "0"
+        self.flipBit = "1" # TODO: remove entirely, just hardcode 1
         self.dataBit = "0"
         self.pinstate = [0,0,0,0,0,0]
     def write(self, data):
         chunks = [data[i:i+27] for i in range(0, len(data), 27)]
         self.writeBuffer += chunks
-        self.flipBit = "1" if self.flipBit == "0" else "0"
+        self.dataBit = "1" if self.dataBit == "0" else "0"
     def read(self, message, onread):
         if onread is not None:
             onread(pack.microbit_load_matrix(json.loads(message)["params"]["message"]))
