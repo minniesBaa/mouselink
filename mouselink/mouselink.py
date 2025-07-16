@@ -103,7 +103,11 @@ class microbit(_peripheral):
                     case _:
                         pass
             except TimeoutError:
-                sock.send(self._sl.make_microbit_packet(self._comm.towrite()))
+                pass
             except Exception as e:
             #    print(e)
                 break
+            towrite = self._comm.towrite()
+            sock.send(self._sl.make_microbit_packet("AAAAAAAAAAAAAA=="))
+            if towrite is not None:
+                sock.send(self._sl.make_microbit_packet(towrite))

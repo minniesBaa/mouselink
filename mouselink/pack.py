@@ -41,12 +41,12 @@ def microbit_load_matrix(data):
 def microbit_build_sensors(sensors, pins):
     tiltX = [int(str(sensors[0]), 2) * 10 >> 8, int(str(sensors[0]), 2) * 10 & 0xff]
     tiltY = [int(str(sensors[1]), 2) * 10 >> 8, int(str(sensors[1]), 2) * 10 & 0xff]
-    buttonA = (1 if sensors[2] == "1" else 0)
-    buttonB = (1 if sensors[3] == "1" else 0)
-    touchpin1 = (1 if sensors[4] !=pins[0] else 0) # TODO: use int
-    touchpin2 = (1 if sensors[5] !=pins[1] else 0)
-    touchpin3 = (1 if sensors[6] !=pins[2] else 0)
-    gesture = int(f"{1 if sensors[7] !=pins[3] else 0}{1 if sensors[8] !=pins[4] else 0}{1 if sensors[9] !=pins[5] else 0}", 2)
+    buttonA = 1 # TODO: remove flipBit entirely
+    buttonB = int(sensors[2])
+    touchpin1 = (1 if sensors[3] !=pins[0] else 0)
+    touchpin2 = (1 if sensors[4] !=pins[1] else 0)
+    touchpin3 = (1 if sensors[5] !=pins[2] else 0)
+    gesture = int(f"{1 if sensors[6] !=pins[3] else 0}{1 if sensors[7] !=pins[4] else 0}{1 if sensors[8] !=pins[5] else 0}", 2)
     print(gesture)
     data = []
     data.extend(tiltX)
@@ -57,30 +57,20 @@ def microbit_build_sensors(sensors, pins):
     data.append(touchpin2)
     data.append(touchpin3)
     data.append(gesture)
+    print(f"built data: {data}")
     print(_b64ify(data))
-    print((tiltX, tiltY))
-    return [_b64ify(data), [touchpin1, touchpin2, touchpin3, int(str(gesture).zfill(3)[0]), int(str(gesture).zfill(3)[1]), int(str(gesture).zfill(3)[2])]]
-def _split_bits_microbit(data,bit,bit2):
-    data = str(data).zfill(27)
-    breakoutindexes = [10,10,"bit","databit",1,1,1,1,1,1]
-    buffer = ""
+    return [_b64ify(data), sensors[3:9]]
+def _split_bits_microbit(data,bit):
+    data = str(data).zfill(26)
+    idx = [10,10,None,1,1,1,1,1,1]
+    pos = 0
     res = []
-    for i in range(27):
-        buffer += data[i]
-        if len(buffer) == breakoutindexes[0]:
-            del(breakoutindexes[0])
-            res.append(buffer)
-            buffer = ""
-        elif breakoutindexes[0] == "bit":
-            del(breakoutindexes[0])
+    for i in idx:
+        if i is None:
             res.append(bit)
-            buffer = ""
-        elif breakoutindexes[0] == "databit":
-            del(breakoutindexes[0])
-            res.append(bit2)
-            buffer = ""
-    res.append(buffer)
-    print(res)
+        else:
+            res.append(data[pos:pos+i])
+            pos += i
     return res
 def _make_microbit_msg(data, bit, bit2, pins):
-    return microbit_build_sensors(_split_bits_microbit(data, bit, bit2), pins)
+    return microbit_build_sensors(_split_bits_microbit(data, bit2), pins)

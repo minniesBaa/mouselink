@@ -156,7 +156,7 @@ class microbitprotocol:
         self.writeBuffer = []
         self.flipBit = "1" # TODO: remove entirely, just hardcode 1
         self.dataBit = "0"
-        self.pinstate = [0,0,0,0,0,0]
+        self.pinstate = ["0"] * 6
     def write(self, data):
         chunks = [data[i:i+27] for i in range(0, len(data), 27)]
         self.writeBuffer += chunks
@@ -179,5 +179,5 @@ class microbitprotocol:
             self.pinstate = res[1]
             return res[0]
         else:
-            self.pinstate = [0,0,0,0,0,0]
-            return pack.microbit_build_sensors([0,0,False,False,False,False,False,False,False,False], self.pinstate)[0]
+            self.pinstate = ["0"] * 6
+            return None
