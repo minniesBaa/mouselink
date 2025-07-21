@@ -154,11 +154,12 @@ class sl_messages_microbit(sl_messages_ev3):
 class microbitprotocol:
     def __init__(self):
         self.writeBuffer = []
-        self.flipBit = "1" # TODO: remove entirely, just hardcode 1
         self.dataBit = "0"
         self.pinstate = ["0"] * 6
     def write(self, data):
-        chunks = [data[i:i+27] for i in range(0, len(data), 27)]
+        chunks = [data[i:i+26] for i in range(0, len(data), 26)]
+        #chunks = [f"1{chunks[i]}" for i in range(0, len(chunks))]
+        print(chunks)
         self.writeBuffer += chunks
         self.dataBit = "1" if self.dataBit == "0" else "0"
     def read(self, message, onread):
@@ -172,12 +173,14 @@ class microbitprotocol:
         if not self.writeBuffer == []:
             chunk = self.writeBuffer[0]
             del(self.writeBuffer[0])
-            self.flipBit = "1" if self.flipBit == "0" else "0"
-            print((chunk, self.flipBit, self.dataBit, self.pinstate))
-            res = pack._make_microbit_msg(chunk, self.flipBit, self.dataBit, self.pinstate)
+            self.dataBit = "1" if self.dataBit == "0" else "0"
+            print((chunk, self.dataBit, self.pinstate))
+            res = pack._make_microbit_msg(chunk, self.dataBit, self.pinstate)
             print(res)
             self.pinstate = res[1]
+            print(f"wbuffer {self.writeBuffer}")
             return res[0]
         else:
+            print("reset pin state")
             self.pinstate = ["0"] * 6
             return None

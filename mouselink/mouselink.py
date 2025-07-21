@@ -86,7 +86,7 @@ class microbit(_peripheral):
         global onread
         while True:
             try:
-                message = sock.recv(timeout=0.1)
+                message = sock.recv(timeout=0.3)
                 match self._sl.getMethod(message):
                     case "discover":
                         sock.send(self._sl.connection_info(-500, self.name))
@@ -105,9 +105,12 @@ class microbit(_peripheral):
             except TimeoutError:
                 pass
             except Exception as e:
-            #    print(e)
                 break
             towrite = self._comm.towrite()
-            sock.send(self._sl.make_microbit_packet("AAAAAAAAAAAAAA=="))
             if towrite is not None:
                 sock.send(self._sl.make_microbit_packet(towrite))
+                time.sleep(0.1)
+                
+                print("sent packet")
+            else:
+                sock.send(self._sl.make_microbit_packet("AAAAAAAAAAAAAA=="))
