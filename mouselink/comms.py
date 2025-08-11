@@ -154,33 +154,28 @@ class sl_messages_microbit(sl_messages_ev3):
 class microbitprotocol:
     def __init__(self):
         self.writeBuffer = []
-        self.dataBit = "0"
         self.pinstate = ["0"] * 6
     def write(self, data):
-        chunks = [data[i:i+26] for i in range(0, len(data), 26)]
-        #chunks = [f"1{chunks[i]}" for i in range(0, len(chunks))]
-        print(chunks)
-        self.writeBuffer += chunks
-        self.dataBit = "1" if self.dataBit == "0" else "0"
+        if len(data) <=20:
+            self.writeBuffer += data
+        else:
+            raise ValueError("microbit.write() only takes a maximum of 20 characters!")
+
     def read(self, message, onread):
         if onread is not None:
             onread(pack.microbit_load_matrix(json.loads(message)["params"]["message"]))
         else:
             print("Set your on_read function to respond to messages from Scratch!")
-    def val(self):
-        pass
     def towrite(self):
         if not self.writeBuffer == []:
+            print(f"wbuffer {self.writeBuffer}")
             chunk = self.writeBuffer[0]
             del(self.writeBuffer[0])
-            self.dataBit = "1" if self.dataBit == "0" else "0"
-            print((chunk, self.dataBit, self.pinstate))
-            res = pack._make_microbit_msg(chunk, self.dataBit, self.pinstate)
+            print(chunk)
+            res = pack._make_microbit_msg(chunk)
             print(res)
-            self.pinstate = res[1]
-            print(f"wbuffer {self.writeBuffer}")
             return res[0]
         else:
-            print("reset pin state")
-            self.pinstate = ["0"] * 6
+            """print("reset pin state")
+            self.pinstate = ["0"] * 6"""
             return None
