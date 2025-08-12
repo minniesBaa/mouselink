@@ -57,6 +57,7 @@ class ev3(_peripheral):
         self._sl = comms.sl_messages_ev3() # set comms and sl objects
         self._comm = comms.ev3protocol()
         self.name = "Mouselink Device"
+        self.type = "ev3"
     def _link(self,websocket):
         # websocket connection handler for EV3
         # TODO: use match/case here instead of if statements
@@ -82,6 +83,7 @@ class microbit(_peripheral):
         self._sl = comms.sl_messages_microbit() # set comms and sl objects
         self._comm = comms.microbitprotocol()
         self.name = "Mouselink Device"
+        self.type = "micro:bit"
     def _link(self,sock):
         global onread
         while True:
