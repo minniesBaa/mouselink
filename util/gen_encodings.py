@@ -14,7 +14,7 @@ def build_formats():
         counter = 0
         built = {}
         for char in format["charset"]:
-            built[char] = str(int(str(counter), 2)).zfill(format["bits"])
+            built[char] = str(bin(counter))[2:].zfill(format["bits"])
             counter +=1
         builtformat = [format["prefix"], 18 / format["bits"], built]
         builtformats[fname] = builtformat
