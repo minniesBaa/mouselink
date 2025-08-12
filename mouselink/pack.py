@@ -39,7 +39,7 @@ def reconstruct_matrix(data):
 def microbit_load_matrix(data):
     return reconstruct_matrix(_unpk(data))
 
-def microbit_build_sensors(sensors):
+def microbit_build_sensors(sensors, messagebit):
     """ buttonA = 1 # TODO: remove flipBit entirely
     buttonB = int(sensors[2])
     touchpin1 = (1 if sensors[3] !=pins[0] else 0)
@@ -64,7 +64,7 @@ def microbit_build_sensors(sensors):
     data.extend(tiltY)
     data.extend([
             1,
-            0,
+            messagebit,
             0,
             0,
             0,

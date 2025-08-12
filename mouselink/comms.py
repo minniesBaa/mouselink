@@ -146,7 +146,10 @@ class sl_messages_microbit(sl_messages_ev3):
     def make_microbit_packet(b64):
         data = {
             "jsonrpc":"2.0","method":"characteristicDidChange","params":    {
-                        "serviceId":"0000f005-0000-1000-8000-00805f9b34fb","characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc","encoding":"base64","message":None
+                        "serviceId":"0000f005-0000-1000-8000-00805f9b34fb",
+                        "characteristicId":"5261da01-fa7e-42ab-850b-7c80220097cc",
+                        "encoding":"base64",
+                        "message":None
                     }
                 }
         data["params"]["message"] = b64
@@ -154,10 +157,15 @@ class sl_messages_microbit(sl_messages_ev3):
 class microbitprotocol:
     def __init__(self):
         self.writeBuffer = []
+        self.messageFlag = []
         self.pinstate = ["0"] * 6
     def write(self, data):
         if len(data) <=20:
             self.writeBuffer += data
+            if len(self.messageFlag) == 0:
+                self.messageFlag = [1]
+            else:
+                self.messageFlag += 1 if self.messageFlag[len(self.messageFlag) - 1] == 0 else 0
         else:
             raise ValueError("microbit.write() only takes a maximum of 20 characters!")
 
@@ -170,9 +178,11 @@ class microbitprotocol:
         if not self.writeBuffer == []:
             print(f"wbuffer {self.writeBuffer}")
             chunk = self.writeBuffer[0]
+            flag = self.messageFlag[0]
             del(self.writeBuffer[0])
+            del(self.messageFlag[0])
             print(chunk)
-            res = pack._make_microbit_msg(chunk)
+            res = pack._make_microbit_msg(chunk, flag)
             print(res)
             return res[0]
         else:
